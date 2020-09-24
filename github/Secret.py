@@ -58,3 +58,18 @@ class Secret(github.GithubObject.CompletableGithubObject):
         self._completeIfNotSet(self._url)
         return self._url.value
 
+    def update(
+        self,
+        encrypted_value,
+        key_id,
+        visibility,
+        selected_repository_ids=None
+    ):
+        """
+        :calls: `PUT /orgs/{org}/actions/secrets/{secret_name} <https://docs.github.com/en/rest/reference/actions#create-or-update-an-organization-secret>`_
+        :encrypted_value: string
+        :key_id:
+        :visibility: string
+        :selected_repositoy_ids: list of ints
+        """
+        headers, data = self._requester.requestJsonAndCheck("POST", self.url)

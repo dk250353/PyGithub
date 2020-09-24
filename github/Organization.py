@@ -584,6 +584,21 @@ class Organization(github.GithubObject.CompletableGithubObject):
             self._requester, headers, data, completed=True
         )
 
+    def create_secret(
+        self,
+        name,
+        encrypted_value,
+        key_id=github.GithubObject.NotSet,
+        visibility="all",
+        selected_repository_ids=github.GithubObject.NotSet,
+    ):
+        """
+        TODO
+        :calls: `PUT /orgs/{org}/actions/secrets/{secret_name} <https://docs.github.com/en/rest/reference/actions#create-or-update-an-organization-secret>`
+        :rtype: :class:`github.Secret.Secret` or nothing?
+        """
+        return
+
     def create_team(
         self,
         name,
@@ -870,6 +885,43 @@ class Organization(github.GithubObject.CompletableGithubObject):
             self._requester,
             self.url + "/public_members",
             None,
+        )
+
+    def get_secrets(self):
+        """
+        :calls: `GET /orgs/{org}/actions/secrets <https://docs.github.com/en/rest/reference/actions#list-organization-secrets>`
+        :rtype: :class:`github.PaginatedList.PaginatedList` of :class:`github.Secret.Secret`
+        """
+        return github.PaginatedList.PaginatedList(
+            github.Secret.Secret,
+            self._requester,
+            self.url + "/actions/secrets",
+            None,
+        )
+
+    def get_public_key(self):
+        """
+        :calls: `GET /orgs/{org}/actions/secrets/public-key <https://docs.github.com/en/rest/reference/actions#get-an-organization-public-key>`
+        :rtype:
+        """
+        return github.PaginatedList.PaginatedList(
+            github.Secret.Secret,
+            self._requester,
+            self.url + "/actions/secrets/public-key",
+            None,
+        )
+
+    def get_secret(self, name):
+        """
+        :calls: `GET /orgs/{org}/actions/secrets/{secret_name} <https://docs.github.com/en/rest/reference/actions#get-an-organization-secret>`
+        :rtype: :class:`github.Secret.Secret`
+        """
+        assert isinstance(name, str), name
+        headers, data = self._requester.requestJsonAndCheck(
+            "GET", self.url + "/actions/secrets/" + name
+        )
+        return github.Secret.Secret(
+            self._requester, headers, data, completed=True
         )
 
     def get_outside_collaborators(self, filter_=github.GithubObject.NotSet):
